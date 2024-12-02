@@ -1,0 +1,31 @@
+The CA-Certificates package is based on the list provided
+by the Mozilla Foundation.
+
+This version of the package contains the following adjustments:
+
+(a)
+The following root CA certificate is included in Mozilla's list:
+  Subject/Issuer: "E=premium-server@thawte.com,CN=Thawte Premium Server CA,OU=Certification Services Division,O=Thawte Consulting cc,L=Cape Town,ST=Western Cape,C=ZA"
+  Serial Number: 1 (0x1)
+  Signature Algorithm: PKCS #1 MD5 With RSA Encryption
+  Fingerprint (SHA1): 62:7F:8D:78:27:65:63:99:D2:7D:7F:90:44:C9:FE:B3:F3:3E:FA:9A
+
+For compatibility with signed applets and OpenJDK, this package includes
+an additional version of the root CA certificate, which contains the
+same issuer/subject names and the same public key, but which contains a
+different signature algorithm, serial number and validity dates:
+  Serial Number:36:12:22:96:c5:e3:38:a5:20:a1:d2:5f:4c:d7:09:54
+  Signature Algorithm: PKCS #1 SHA-1 With RSA Encryption
+  Fingerprint (SHA1): E0:AB:05:94:20:72:54:93:05:60:62:02:36:70:F7:CD:2E:FC:66:66
+
+Thawte/Symantec have confirmed that the certificate is authentic at:
+  https://bugzilla.mozilla.org/show_bug.cgi?id=1100532#c9
+
+(b)
+Mozilla has removed several CA certificates that use 1024 bit keys.
+
+For compatibility reasons, this package keeps several of those removed
+CA certificates still trusted by default.
+
+Please refer to the ca-legacy(8) man page and the ca-legacy utility
+to learn how to disable them, if desired.
