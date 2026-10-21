@@ -35,11 +35,11 @@ Name: ca-certificates
 # to have increasing version numbers. However, the new scheme will work, 
 # because all future versions will start with 2013 or larger.)
 
-Version: 2024.2.69_v8.0.303
+Version: 2026.2.92_v9.0.319
 # On RHEL 7.x, please keep the release version >= 70
 # When rebasing on Y-Stream (7.y), use 71, 72, 73, ...
 # When rebasing on Z-Stream (7.y.z), use 70.0, 70.1, 70.2, ...
-Release: 73%{?dist}
+Release: 74%{?dist}
 License: Public Domain
 
 Group: System Environment/Base
@@ -64,6 +64,10 @@ Source16: README.pem
 Source17: README.src
 Source18: README.ca-certificates
 
+Patch0: remove-aaa-certificate-services.patch
+Patch1: remove-emsign-ecc-root-ca-g3.patch
+Patch2: remove-emsign-root-cs-ca-g3.patch
+
 BuildArch: noarch
 
 Requires: p11-kit >= 0.23.5
@@ -85,11 +89,14 @@ mkdir %{name}/certs
 mkdir %{name}/certs/legacy-default
 mkdir %{name}/certs/legacy-disable
 mkdir %{name}/java
+cp %{SOURCE0} %{name}/certs/certdata.txt
+%patch -P 0 -p0 -d %{name}/certs
+%patch -P 1 -p0 -d %{name}/certs
+%patch -P 2 -p0 -d %{name}/certs
 
 %build
 pushd %{name}/certs
  pwd
- cp %{SOURCE0} .
  python %{SOURCE4} >c2p.log 2>c2p.err
 popd
 pushd %{name}
@@ -364,6 +371,13 @@ fi
 
 
 %changelog
+*Wed Oct 21 2026 Andrew Jorgensen <ajorgens@ciq.com> - 2026.2.92_v9.0.319-74
+- Update to CKBI 2.92_v9.0.319 from NSS 3.131.1
+- Distrusts emSign roots affected by the eMudhra intermediate compromise
+- Removes the AAA Certificate Services root, which cross-signed them
+- Removes emSign ECC Root CA - G3 from the code-signing trust list
+- Does not add emSign Root CS CA - G3, issuer of the compromised CAs
+
 *Fri Nov 29 2024 Jonathan Dieter - 2024.2.69_v8.0.303-73
 - Update to CKBI 2.69_v8.0.303 from NSS 3.101.1 - Fixes CVE-2023-37920
 
